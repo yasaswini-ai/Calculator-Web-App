@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy Calculator Files</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+        .file-section {
+            margin-bottom: 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .file-header {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .copy-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .file-content {
+            background: #fafafa;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            resize: none;
+        }
+        .copied {
+            background: #81c784 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Copy Calculator Files</h1>
+        
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <ol>
+                <li>Click "Copy" button for each file below</li>
+                <li>Create a new text file on your computer</li>
+                <li>Paste the content and save with the correct filename</li>
+                <li>Save all files in the same folder</li>
+                <li>Open index.html in your browser</li>
+            </ol>
+        </div>
+
+        <div class="file-section">
+            <div class="file-header">
+                index.html
+                <button class="copy-btn" onclick="copyToClipboard('html-content')">Copy</button>
+            </div>
+            <textarea id="html-content" class="file-content" readonly></textarea>
+        </div>
+
+        <div class="file-section">
+            <div class="file-header">
+                styles.css
+                <button class="copy-btn" onclick="copyToClipboard('css-content')">Copy</button>
+            </div>
+            <textarea id="css-content" class="file-content" readonly></textarea>
+        </div>
+
+        <div class="file-section">
+            <div class="file-header">
+                script.js
+                <button class="copy-btn" onclick="copyToClipboard('js-content')">Copy</button>
+            </div>
+            <textarea id="js-content" class="file-content" readonly></textarea>
+        </div>
+
+        <div class="file-section">
+            <div class="file-header">
+                README.md
+                <button class="copy-btn" onclick="copyToClipboard('readme-content')">Copy</button>
+            </div>
+            <textarea id="readme-content" class="file-content" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        async function loadFileContent() {
+            try {
+                const files = [
+                    { id: 'html-content', url: 'index.html' },
+                    { id: 'css-content', url: 'styles.css' },
+                    { id: 'js-content', url: 'script.js' },
+                    { id: 'readme-content', url: 'README.md' }
+                ];
+
+                for (const file of files) {
+                    const response = await fetch(file.url);
+                    const content = await response.text();
+                    document.getElementById(file.id).value = content;
+                }
+            } catch (error) {
+                console.error('Error loading files:', error);
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            element.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                const button = element.parentElement.querySelector('.copy-btn');
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                alert('Copy failed. Please select the text manually and copy with Ctrl+C');
+            }
+        }
+
+        // Load file contents when page loads
+        loadFileContent();
+    </script>
+</body>
+</html>
